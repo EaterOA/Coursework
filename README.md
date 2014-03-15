@@ -1,6 +1,6 @@
 What
 ==========
 
-Miscellaneous, *non-graded* stuff that I wrote for some of the classes I've been in. Some of these are created for fun (like implementations of an algorithm learned in class) or as tools to help myself with the course material.
+Miscellaneous code, scripts, or notes that I wrote for one reason or another. Not really tied to any specific project. Maybe useful, maybe not.
 
 Caution: Typically these are written in haste without any regard to maintainability/quality.
