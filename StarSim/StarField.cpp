@@ -6,6 +6,14 @@ int rand(int min, int max)
     return std::rand() % range + min;
 }
 
+void Star::update(std::vector<Star> &universe)
+{
+}
+
+void Star::move(float t)
+{
+}
+
 void StarField::initCircle(int mass, int stars, int galaxies)
 {
     int s = stars / galaxies;
@@ -22,9 +30,9 @@ void StarField::initCircle(int mass, int stars, int galaxies)
 
 void StarField::tick(float t)
 {
-    for (int i = 0; i < universe.size(); i++)
+    for (unsigned i = 0; i < universe.size(); i++)
         universe[i].update(universe);
-    for (int i = 0; i < universe.size(); i++)
+    for (unsigned i = 0; i < universe.size(); i++)
         universe[i].move(t);
 }
 
