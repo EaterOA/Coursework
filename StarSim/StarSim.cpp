@@ -47,6 +47,7 @@ void appStart()
 
         if (focused) {
             field.tick(elapsed.asSeconds());
+            window.draw(field);
         }
 
         window.display();
