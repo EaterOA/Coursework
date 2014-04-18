@@ -44,6 +44,7 @@ namespace util
     float getDist(sf::Vector2f p1, sf::Vector2f p2);
     float getDist(sf::Vector2f p, sf::Vector2f p1, sf::Vector2f p2);
     sf::Vector2f getUnitVector(sf::Vector2f p1, sf::Vector2f p2);
+    sf::Vector2f rotate(sf::Vector2f v, float rad);
 
     //Collision logic
     bool hasCollided(sf::Vector2f c1, util::ShapeVector s1, float dir1, sf::Vector2f c2, util::ShapeVector s2, float dir2);

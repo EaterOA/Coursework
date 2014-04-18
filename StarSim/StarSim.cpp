@@ -15,7 +15,7 @@ bool appInit()
     window.create(sf::VideoMode(800, 600), "Star Simulation", sf::Style::Close, settings);
     window.setFramerateLimit(60);
 
-    field.initCircle(5, 2000, 5);
+    field.initCircle(30, 60.f, 400.f, 500, 1);
 
     return true;
 }
@@ -49,8 +49,8 @@ void appStart()
             field.tick(elapsed.asSeconds());
             window.draw(field);
         }
-
         window.display();
+        window.clear();
     }
 }
 

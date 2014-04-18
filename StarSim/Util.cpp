@@ -91,6 +91,13 @@ namespace util
         return sf::Vector2f(v.x / len, v.y / len);
     }
 
+    sf::Vector2f rotate(sf::Vector2f v, float rad)
+    {
+        sf::Transform tr;
+        tr.rotate(toDeg(rad), sf::Vector2f(0, 0));
+        return tr.transformPoint(v);
+    }
+
     bool hasCollided(sf::Vector2f c1, sf::Vector2f c2, float r2)
     {
         return getDist(c1, c2) <= r2;
