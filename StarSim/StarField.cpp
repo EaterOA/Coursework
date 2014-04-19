@@ -62,17 +62,18 @@ void StarField::initGalaxyCenter(float mass_g, float mass_s, int stars, int gala
     int s = stars / galaxies;
     for (int i = 0; i < galaxies; i++) {
         sf::Vector2f base(RAND(0, 800), RAND(0, 600));
+        sf::Vector2f drift(RAND(-30,30), RAND(-30,30));
         for (int j = 0; j < s; j++) {
-            float r = RAND(500, 900)/10.f;
+            float r = RAND(300, 900)/10.f;
             float spd = sqrt((mass_g + mass_s)/r);
             float rad = util::toRad(RAND(1, 3600)/10.f);
             sf::Vector2f pos = base + sf::Vector2f(r*cos(rad), r*sin(rad));
             sf::Vector2f upos = util::getUnitVector(base, pos);
             sf::Vector2f uvel = util::rotate(upos, util::toRad(90.f));
-            sf::Vector2f vel(spd*uvel.x, spd*uvel.y);
+            sf::Vector2f vel = drift + sf::Vector2f(spd*uvel.x, spd*uvel.y);
             m_stars.push_back(Star(mass_s, pos, vel));
         }
-        m_galaxies.push_back(Star(mass_g, base, sf::Vector2f(0, 0)));
+        m_galaxies.push_back(Star(mass_g, base, drift));
     }
 }
 
@@ -102,6 +103,8 @@ void StarField::tick(float t)
         m_stars[i].move(t);
         m_vertices[i].position = m_stars[i].getPos();
     }
+    for (unsigned i = 0; i < m_galaxies.size(); i++)
+        m_galaxies[i].move(t);
 }
 
 void StarField::draw(sf::RenderTarget& target, sf::RenderStates states) const
