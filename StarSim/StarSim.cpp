@@ -15,7 +15,8 @@ bool appInit()
     window.create(sf::VideoMode(800, 600), "Star Simulation", sf::Style::Close, settings);
     window.setFramerateLimit(60);
 
-    field.initCircle(30, 60.f, 400.f, 500, 1);
+    field.initGalaxyCenter(300000.f, 1.f, 5000, 3);
+//    field.initStarCircle(5.f, 100.f, 0, 500, 1);
 
     return true;
 }

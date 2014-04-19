@@ -9,18 +9,19 @@ Star::Star(float mass, sf::Vector2f pos, sf::Vector2f vel)
     m_acc = sf::Vector2f();
 }
 
-void Star::update(const StarField &f, std::vector<Star> &universe)
+void Star::update(const StarField &f, std::vector<Star> &target)
 {
     m_acc = sf::Vector2f();
-    for (unsigned i = 0; i < universe.size(); i++) {
-        if (this == &universe[i]) continue;
-        m_acc += f.getGravAcc(*this, universe[i]);
+    for (unsigned i = 0; i < target.size(); i++) {
+        if (this == &target[i]) continue;
+        m_acc += f.getGravAcc(*this, target[i]);
     }
 }
 
 void Star::move(float t)
 {
     m_vel += m_acc * t;
+    while (util::getLen(m_vel) > 500.f) m_vel = m_vel * 0.9f;
     m_pos += m_vel * t;
 }
 
@@ -34,32 +35,53 @@ float Star::getMass() const
     return m_mass;
 }
 
-void StarField::initCircle(float mass, float spd, float max_a, int stars, int galaxies)
+void StarField::initStarCircle(float mass, float spd, float max_a, int stars, int galaxies)
 {
+    m_mode = STARCIRCLE;
     m_maxAcc = max_a;
     int s = stars / galaxies;
     for (int i = 0; i < galaxies; i++) {
         sf::Vector2f base(RAND(0, 800), RAND(0, 600));
         for (int j = 0; j < s; j++) {
-            float r = RAND(100, 1500)/10.f;
+            float r = RAND(300, 1000)/10.f;
             if (RAND(0,1)) spd = -spd;
             float rad = util::toRad(RAND(1, 3600)/10.f);
             sf::Vector2f pos = base + sf::Vector2f(r*cos(rad), r*sin(rad));
             sf::Vector2f upos = util::getUnitVector(base, pos);
             sf::Vector2f uvel = util::rotate(upos, util::toRad(90.f));
             sf::Vector2f vel(spd*uvel.x, spd*uvel.y);
-            m_universe.push_back(Star(mass, pos, vel));
+            m_stars.push_back(Star(mass, pos, vel));
         }
 
     }
 }
 
+void StarField::initGalaxyCenter(float mass_g, float mass_s, int stars, int galaxies) 
+{
+    m_mode = GALAXYCENTER;
+    int s = stars / galaxies;
+    for (int i = 0; i < galaxies; i++) {
+        sf::Vector2f base(RAND(0, 800), RAND(0, 600));
+        for (int j = 0; j < s; j++) {
+            float r = RAND(500, 900)/10.f;
+            float spd = sqrt((mass_g + mass_s)/r);
+            float rad = util::toRad(RAND(1, 3600)/10.f);
+            sf::Vector2f pos = base + sf::Vector2f(r*cos(rad), r*sin(rad));
+            sf::Vector2f upos = util::getUnitVector(base, pos);
+            sf::Vector2f uvel = util::rotate(upos, util::toRad(90.f));
+            sf::Vector2f vel(spd*uvel.x, spd*uvel.y);
+            m_stars.push_back(Star(mass_s, pos, vel));
+        }
+        m_galaxies.push_back(Star(mass_g, base, sf::Vector2f(0, 0)));
+    }
+}
+
+
 sf::Vector2f StarField::getGravAcc(Star &s, Star &t) const
 {
     sf::Vector2f sp = s.getPos(), tp = t.getPos();
     float d = util::getDist(sp, tp);
-    float a = s.getMass() * t.getMass() / pow(util::getDist(sp, tp), 2.0);
-    a = MIN(m_maxAcc, a);
+    float a = s.getMass() * t.getMass() / pow(d, 2.0);
     float rad = util::toDir(tp.x - sp.x, tp.y - sp.y);
     return a * sf::Vector2f(cos(rad), sin(rad));
 }
@@ -67,12 +89,18 @@ sf::Vector2f StarField::getGravAcc(Star &s, Star &t) const
 
 void StarField::tick(float t)
 {
-    m_vertices = std::vector<sf::Vertex>(m_universe.size());
-    for (unsigned i = 0; i < m_universe.size(); i++)
-        m_universe[i].update(*this, m_universe);
-    for (unsigned i = 0; i < m_universe.size(); i++) {
-        m_universe[i].move(t);
-        m_vertices[i].position = m_universe[i].getPos();
+    m_vertices = std::vector<sf::Vertex>(m_stars.size());
+    if (m_mode == STARCIRCLE) {
+        for (unsigned i = 0; i < m_stars.size(); i++)
+            m_stars[i].update(*this, m_stars);
+    }
+    else if (m_mode == GALAXYCENTER) {
+        for (unsigned i = 0; i < m_stars.size(); i++)
+            m_stars[i].update(*this, m_galaxies);
+    }
+    for (unsigned i = 0; i < m_stars.size(); i++) {
+        m_stars[i].move(t);
+        m_vertices[i].position = m_stars[i].getPos();
     }
 }
 
