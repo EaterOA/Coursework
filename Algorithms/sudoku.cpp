@@ -2,7 +2,7 @@
 Problem: Given a sudoku board, computes and outputs a solution to the board
 
 Input:
-81 separated numbers representing the board in "sudoku.txt"
+81 whitespace separated numbers representing the board from stdin
 
 Sample input:
 0 0 0 0 0 0 0 0 0
@@ -28,13 +28,12 @@ Sample output:
 */
 
 #include <iostream>
-#include <fstream>
 
 using namespace std;
 
 bool solve(int grid[][9])
 {
-	//Find unused numbers in each row, column, and 3x3 box
+	// Find unused numbers in each row, column, and 3x3 box
 	bool y[9][9] = {0}, x[9][9] = {0}, b[9][9] = {0};
 	for (int r = 0; r < 9; r++) {
 		for (int c = 0; c < 9; c++){
@@ -45,7 +44,7 @@ bool solve(int grid[][9])
 			}
 		}
 	}
-	//Find the point with lowest amount of numbers that can fit there
+	// Find the point with lowest amount of numbers that can fit there
 	bool validNums[9][9][9] = {0};
 	int lowest = 10, lowestR, lowestC;
 	for (int r = 0; r < 9; r++) {
@@ -63,7 +62,7 @@ bool solve(int grid[][9])
 			}
 		}
 	}
-	//If no point was found, puzzle is complete
+	// If no point was found, puzzle is complete
 	if (lowest == 10) {
 		for (int r = 0; r < 9; r++) {
 			for (int c = 0; c < 9; c++)
@@ -72,9 +71,9 @@ bool solve(int grid[][9])
 		}
 		return true;
 	}
-	//If a point with 0 fit was found, puzzle is invalid
+	// If a point with 0 fit was found, puzzle is invalid
 	if (lowest == 0) return false;
-	//Try each valid number on that point and recurse
+	// Try each valid number on that point and recurse
 	for (int i = 0; i < 9; i++) {
 		if (validNums[lowestR][lowestC][i]) {
 			grid[lowestR][lowestC] = i + 1;
@@ -87,11 +86,10 @@ bool solve(int grid[][9])
 
 int main()
 {
-	ifstream fin("sudoku.txt");
 	int board[9][9];
 	for (int j = 0; j < 9; j++)
 		for (int k = 0; k < 9; k++)
-			fin >> board[j][k];
+			cin >> board[j][k];
 	solve(board);
 	return 0;
 }

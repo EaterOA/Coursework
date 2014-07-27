@@ -14,7 +14,7 @@ using namespace std;
 const int DR[] = {0, 1, 0, -1};
 const int DC[] = {1, 0, -1, 0};
 
-struct Node 
+struct Node
 {
     Node(int rr, int cc, int ddist): r(rr), c(cc), dist(ddist) {}
     int r, c;

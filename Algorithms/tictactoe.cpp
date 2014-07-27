@@ -1,4 +1,6 @@
-//Program to simulate a tic-tac-toe game between the player and a perfect AI
+/*
+Program to simulate a tic-tac-toe game between the player and a perfect AI
+*/
 
 #include <iostream>
 
@@ -28,7 +30,7 @@ char whoWon(const char b[][3])
 double place(char p, int toR, int toC, char board[][3])
 {
 	char win = whoWon(board);
-	if (win != '_') 
+	if (win != '_')
 		return (win==p?1:-1);
 	double winChance = 0;
 	int numMoves = 0;
@@ -59,8 +61,8 @@ void nextMove(char player, char board[][3])
 			if (board[r][c] == '_') {
 				board[r][c] = player;
 				double result = place(player, r, c, board);
-				//Uncomment to see AI analysis
-				//cout << "AI chance of winning at " << r+1 << " " << c+1 << ": " << result << endl;
+				// Uncomment to see AI analysis
+				cout << "AI chance of winning at " << r+1 << " " << c+1 << ": " << result << endl;
 				board[r][c] = '_';
 				if (best < result) {
 					best = result;
@@ -118,10 +120,10 @@ int main()
 
 	while (true) {
 		nextMove(other(player), board);
-		if (whoWon(board) != '_' || !hasSpots(board)) break; 
+		if (whoWon(board) != '_' || !hasSpots(board)) break;
 		printBoard(board);
 		prompt(player, board);
-		if (whoWon(board) != '_' || !hasSpots(board)) break; 
+		if (whoWon(board) != '_' || !hasSpots(board)) break;
 	}
 	printBoard(board);
 	if (whoWon(board) == '_') cout << "Draw!" << endl;

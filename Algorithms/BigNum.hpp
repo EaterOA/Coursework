@@ -30,7 +30,7 @@ public:
         if (!sign && o.sign) return false;
         int idx = max(d.size(), o.d.size());
         while (idx >= 0) {
-            if (d[idx] != o.d[idx]) 
+            if (d[idx] != o.d[idx])
                 return sign ^ (d[idx] < o.d[idx]);
             idx--;
         }
@@ -90,7 +90,7 @@ public:
         delete s;
         return res;
     }
-    
+
 private:
     template <class T>
     T max(T a, T b) const

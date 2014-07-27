@@ -12,7 +12,7 @@ int dfs(int config, int cur, int memo[PINS][FULLCONFIG])
     int res = 1;
     for (int i = 0; i < 9; i++) {
 
-        //Check legality
+        //Check legality of move from s to t
         int s = cur, t = i;
         if (config & (1<<s)) continue;  //s must be closed
         if (~config & (1<<t)) continue; //t must be open
