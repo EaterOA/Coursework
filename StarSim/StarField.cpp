@@ -56,7 +56,7 @@ void StarField::initStarCircle(float mass, float spd, float max_a, int stars, in
     }
 }
 
-void StarField::initGalaxyCenter(float mass_g, float mass_s, int stars, int galaxies) 
+void StarField::initGalaxyCenter(float mass_g, float mass_s, int stars, int galaxies)
 {
     m_mode = GALAXYCENTER;
     int s = stars / galaxies;

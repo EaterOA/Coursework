@@ -47,8 +47,8 @@ Distance: 34.142136
 using namespace std;
 
 struct Point {
-	int x, y, id;
-	double dist;
+    int x, y, id;
+    double dist;
     int from;
     bool operator<(const Point &other) const { return dist > other.dist; }
 };
@@ -61,7 +61,7 @@ struct Edge {
 // Returns the pythagorean distance between two points
 inline double getDist(Point &p1, Point &p2)
 {
-	return sqrt((double)(p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y));
+    return sqrt((double)(p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y));
 }
 
 int main()
@@ -72,16 +72,16 @@ int main()
     vector<int> farthestSeq(1, 0);
     double farthestDist = 0;
 
-	// Read input and initialize a vector of points
-	// and a weighted adjacency matrix of edges
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		int x, y;
-		cin >> x >> y;
-		Point p = {x, y, i, 0};
+    // Read input and initialize a vector of points
+    // and a weighted adjacency matrix of edges
+    cin >> N;
+    for (int i = 0; i < N; i++) {
+        int x, y;
+        cin >> x >> y;
+        Point p = {x, y, i, 0};
         points.push_back(p);
-	}
-	for (int i = 0; i < N; i++) {
+    }
+    for (int i = 0; i < N; i++) {
         int size, next;
         cin >> size;
         edges.push_back(vector<Edge>());
@@ -90,19 +90,19 @@ int main()
             Edge e = {i, next, getDist(points[i], points[next])};
             edges.back().push_back(e);
         }
-	}
+    }
 
-	// Use Dijkstra's algorithm on every city to find the shortest path
-	// from city i to every other city
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++)
+    // Use Dijkstra's algorithm on every city to find the shortest path
+    // from city i to every other city
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)
             points[j].dist = numeric_limits<double>::infinity();
-		points[i].dist = 0;
-		priority_queue<Point> pq;
-		pq.push(points[i]);
-		while (!pq.empty()) {
-			Point p = pq.top(); pq.pop();
-			for (int j = 0; j < edges[p.id].size(); j++) {
+        points[i].dist = 0;
+        priority_queue<Point> pq;
+        pq.push(points[i]);
+        while (!pq.empty()) {
+            Point p = pq.top(); pq.pop();
+            for (int j = 0; j < edges[p.id].size(); j++) {
                 int next = edges[p.id][j].end;
                 double d = edges[p.id][j].dist + points[p.id].dist;
                 if (d < points[next].dist) {
@@ -110,11 +110,11 @@ int main()
                     points[next].from = p.id;
                     pq.push(points[next]);
                 }
-			}
-		}
-		// Record the distance of the city farthest from city n
-		for (int j = 0; j < N; j++) {
-			if (points[j].dist != numeric_limits<double>::infinity()
+            }
+        }
+        // Record the distance of the city farthest from city n
+        for (int j = 0; j < N; j++) {
+            if (points[j].dist != numeric_limits<double>::infinity()
                 && points[j].dist > farthestDist) {
                 farthestDist = points[j].dist;
                 farthestSeq = vector<int>();
@@ -122,13 +122,13 @@ int main()
                     farthestSeq.push_back(k);
                 farthestSeq.push_back(i);
                 reverse(farthestSeq.begin(), farthestSeq.end());
-			}
-		}
-	}
+            }
+        }
+    }
 
-	// Output!
-	cout.setf(ios::fixed);
-	cout.precision(6);
+    // Output!
+    cout.setf(ios::fixed);
+    cout.precision(6);
     cout << "The longest shortest path is: " << farthestSeq[0];
     for (int i = 1; i < farthestSeq.size(); i++)
         cout << " -> " << farthestSeq[i];

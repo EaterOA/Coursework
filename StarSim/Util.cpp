@@ -194,7 +194,7 @@ namespace util
             c2 + rotWidth2 - rotHeight2,
             c2 + rotWidth2 + rotHeight2,
             c2 - rotWidth2 + rotHeight2};
-        
+
         //Inside edge cross check
         if (getDist(c1, tr2[0]) > r11) return true;
         if (getDist(c1, tr2[1]) > r11) return true;
@@ -408,7 +408,7 @@ namespace util
         return s.substr(idx1, len);
     }
 
-    std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) 
+    std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems)
     {
         std::stringstream ss(s);
         std::string item;
@@ -418,7 +418,7 @@ namespace util
         return elems;
     }
 
-    std::vector<std::string> split(const std::string &s, char delim) 
+    std::vector<std::string> split(const std::string &s, char delim)
     {
         std::vector<std::string> elems;
         split(s, delim, elems);
@@ -438,7 +438,7 @@ namespace util
         }
         return elems;
     }
-    
+
     bool isPrefix(const std::string &p, const std::string &s)
     {
         if (p.size() > s.size()) return false;

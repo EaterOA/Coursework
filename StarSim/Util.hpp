@@ -58,7 +58,7 @@ namespace util
     bool hasCollided(sf::Vector2f c1, sf::Vector2f s1, float dir1, sf::Vector2f c2, float r2);
     bool hasCollided(sf::Vector2f c1, sf::Vector2f s1, float dir1, sf::Vector2f c2, sf::Vector2f s2, float dir2);
 
-    //Sprite manipulation 
+    //Sprite manipulation
     sf::Vector2f referenceToCenter(sf::Vector2f pos, sf::Vector2f size, int reference);
     void copySprite(const sf::Vertex src[4], sf::Vertex dest[4]);
     void copyTexture(const sf::Vertex src[4], sf::Vertex dest[4]);
@@ -70,7 +70,7 @@ namespace util
     void setAlpha(sf::Vertex sprite[4], unsigned char alpha);
     sf::Vector2f translatePos(sf::Vector2f pos, float dir, float offsetX, float offsetY);
     sf::Vector2f translatePos(sf::Vector2f pos, float unitX, float unitY, float offsetX, float offsetY);
-    
+
     //String manipulation
     std::string trim(const std::string &s);
     std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);

@@ -80,7 +80,7 @@ public:
         }
         return res;
     }
-private:    
+private:
     struct Implicant
     {
         vector<int> children;
