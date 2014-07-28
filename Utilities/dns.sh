@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Usage: dns.sh <hostname> [hostname]...
+# This script will check every hostname argument provided with the host program,
+# giving you a simple answer of Yay or Nay for whether that host is reachable.
+# If an A record is found, the IP is also printed. Outputs are colored using
+# ANSI color codes.
+# If used with the watch program, make sure to set watch's -c flag.
+
 BLACK="\033[0;30m"
 RED="\033[0;31m"
 GREEN="\033[0;32m"
@@ -17,24 +24,30 @@ LPURPLE="\033[1;35m"
 LCYAN="\033[1;36m"
 WHITE="\033[1;37m"
 NC="\033[0m"
- 
-nslookup linux.ucla.edu 131.179.104.1   \
-  | grep '^Address:.*40$' >/dev/null    \
-  && echo -e "${LGREEN}yay${NC}"        \
-  || echo -e "${LRED}nay${NC}"
 
-nslookup 131.179.104.40 131.179.104.1   \
-  | grep 'name = hiroshima' >/dev/null  \
-  && echo -e "${LGREEN}yay${NC}"        \
-  || echo -e "${LRED}nay${NC}"
+for h in "$@"; do
 
-nslookup linux.ucla.edu 131.179.104.10  \
-  | grep '^Address:.*40$' >/dev/null    \
-  && echo -e "${LGREEN}yay${NC}"        \
-  || echo -e "${LRED}nay${NC}"
+    # No feeding host with options please
+    if [[ $h == -* ]]; then
+        continue
+    fi
 
-nslookup 131.179.104.40 131.179.104.10  \
-  | grep 'name = hiroshima' >/dev/null  \
-  && echo -e "${LGREEN}yay${NC}"        \
-  || echo -e "${LRED}nay${NC}"
- 
+    # Testing the hostname
+    echo -n "Checking ${h}... "
+    output=`host "$h"`
+    echo "$output" |
+    grep "not found" >/dev/null
+
+    # If not found
+    if [ $? -eq 0 ]; then
+        echo -en "${LRED}Nay";
+    # If found
+    else
+        echo -en "${LGREEN}Yay ";
+        echo "$output" |
+        grep -ZEom 1 "(([0-9]{1,3})\.){3}[0-9]{1,3}" |
+        xargs echo -n
+    fi
+
+    echo -e "${NC}"
+done

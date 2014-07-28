@@ -1,8 +1,8 @@
 Algorithms
 ==========
 
-Implementations coupled with contrived use cases of any interesting and useless
-algorithms.
+Implementations coupled with contrived use cases of any interesting or useless
+algorithm.
 
 (Really just a catch-all for random code snippets I wrote for one reason or
 another)
