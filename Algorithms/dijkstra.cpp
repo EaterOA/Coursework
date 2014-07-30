@@ -46,6 +46,9 @@ Distance: 34.142136
 
 using namespace std;
 
+// Define which dijkstra implementation to use
+#define IMPL 1
+
 struct Point {
     int x, y, id;
     double dist;
@@ -66,6 +69,8 @@ inline double getDist(Point &p1, Point &p2)
 
 int main()
 {
+    const double INF = numeric_limits<double>::infinity();
+
     int N;
     vector<Point> points;
     vector<vector<Edge> > edges;
@@ -96,8 +101,31 @@ int main()
     // from city i to every other city
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++)
-            points[j].dist = numeric_limits<double>::infinity();
+            points[j].dist = INF;
         points[i].dist = 0;
+
+        #if IMPL == 1
+        // Implementation #1: O(V^3)
+        vector<bool> visited(N, 0);
+        for (int j = 0; j < N; j++) {
+            int minNode = -1;
+            for (int k = 0; k < N; k++)
+                if (!visited[k] && points[k].dist != INF && (minNode == -1 || points[k].dist < points[minNode].dist))
+                    minNode = k;
+            if (minNode == -1) break;
+            visited[minNode] = 1;
+            for (int k = 0; k < edges[minNode].size(); k++) {
+                int next = edges[minNode][k].end;
+                double d = edges[minNode][k].dist + points[minNode].dist;
+                if (d < points[next].dist) {
+                    points[next].dist = d;
+                    points[next].from = minNode;
+                }
+            }
+        }
+
+        #elif IMPL == 2
+        // Implementation #2: O(ElogE)
         priority_queue<Point> pq;
         pq.push(points[i]);
         while (!pq.empty()) {
@@ -112,9 +140,11 @@ int main()
                 }
             }
         }
+
+        #endif
         // Record the distance of the city farthest from city n
         for (int j = 0; j < N; j++) {
-            if (points[j].dist != numeric_limits<double>::infinity()
+            if (points[j].dist != INF
                 && points[j].dist > farthestDist) {
                 farthestDist = points[j].dist;
                 farthestSeq = vector<int>();
