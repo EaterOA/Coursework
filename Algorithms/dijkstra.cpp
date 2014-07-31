@@ -43,17 +43,25 @@ Distance: 34.142136
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
 // Define which dijkstra implementation to use
-#define IMPL 1
+#define IMPL 3
 
 struct Point {
     int x, y, id;
     double dist;
     int from;
-    bool operator<(const Point &other) const { return dist > other.dist; }
+    bool operator<(const Point &other) const {
+        if (dist != other.dist)
+            return dist > other.dist;
+        // Little hack to guarantee uniqueness
+        if (x != other.x)
+            return x > other.x;
+        return y > other.y;
+    }
 };
 
 struct Edge {
@@ -61,7 +69,6 @@ struct Edge {
     double dist;
 };
 
-// Returns the pythagorean distance between two points
 inline double getDist(Point &p1, Point &p2)
 {
     return sqrt((double)(p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y));
@@ -105,7 +112,7 @@ int main()
         points[i].dist = 0;
 
         #if IMPL == 1
-        // Implementation #1: O(V^3)
+        // Implementation #1: O(V^2)
         vector<bool> visited(N, 0);
         for (int j = 0; j < N; j++) {
             int minNode = -1;
@@ -137,6 +144,30 @@ int main()
                     points[next].dist = d;
                     points[next].from = p.id;
                     pq.push(points[next]);
+                }
+            }
+        }
+
+        #else
+        // Implementation #3: O(ElogV)
+        set<Point> s;
+        s.insert(points[i]);
+        while (!s.empty()) {
+            set<Point>::iterator last = --s.end();
+            Point p = *last;
+            s.erase(last);
+            for (int j = 0; j < edges[p.id].size(); j++) {
+                int next = edges[p.id][j].end;
+                double d = edges[p.id][j].dist + points[p.id].dist;
+                if (d < points[next].dist) {
+                    if (points[next].dist != INF) {
+                        set<Point>::iterator it = s.find(points[next]);
+                        if (it != s.end())
+                            s.erase(it);
+                    }
+                    points[next].dist = d;
+                    points[next].from = p.id;
+                    s.insert(points[next]);
                 }
             }
         }
