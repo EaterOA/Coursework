@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#define FSIZE 35
+#define FSIZE 30
 #define RAND(a,b) (rand() % ((b)-(a)+1) + (a))
 
 const int DR[] = {0, 1, 0, -1};
@@ -22,6 +22,8 @@ struct Node
     Node(int rr, int cc, int h , int d): r(rr), c(cc), heuristic(h), dist(d)
     {
         priority = heuristic + dist;
+        fromR = -1;
+        fromC = -1;
     }
     int r, c;
     int heuristic;
@@ -100,21 +102,25 @@ int main()
     field[curR][curC] = '*';
     field[endR][endC] = 'x';
 
-    map<int, bool> seen;
+    map<int, Node> seen;
     set<Node> next;
     Node n(curR, curC, getDist(curR, curC, endR, endC), 0);
     next.insert(n);
+    bool found = false;
     while (!next.empty()) {
         set<Node>::iterator first = next.begin();
         n = *first;
         next.erase(first);
-        if (seen[hash(n.r, n.c)]) continue;
-        if (getDist(n.r, n.c, endR, endC) == 0) break;
-        seen[hash(n.r, n.c)] = true;
+        if (seen.find(hash(n.r, n.c)) != seen.end()) continue;
+        seen.insert(pair<int,Node>(hash(n.r, n.c), n));
+        if (getDist(n.r, n.c, endR, endC) == 0) {
+            found = true;
+            break;
+        }
         for (int i = 0; i < 4; i++) {
             int nextR = n.r + DR[i];
             int nextC = n.c + DC[i];
-            if (!isValid(nextR, nextC) || field[nextR][nextC] == '@' || seen[hash(nextR, nextC)])
+            if (!isValid(nextR, nextC) || field[nextR][nextC] == '@' || seen.find(hash(nextR, nextC)) != seen.end())
                 continue;
             int d = 1 + n.dist;
             int h = getDist(nextR, nextC, endR, endC);
@@ -130,6 +136,16 @@ int main()
         field[curR][curC] = '*';
         printField(field);
         getchar();
-        cout << "======================================================================\n";
+        const string separator(80, '=');
+        cout << separator << "\n";
+    }
+    if (found) {
+        while (curR != -1) {
+            field[curR][curC] = '*';
+            Node n = seen.find(hash(curR, curC))->second;
+            curR = n.fromR;
+            curC = n.fromC;
+        }
+        printField(field);
     }
 }
