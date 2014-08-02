@@ -3,12 +3,15 @@
 #include <string.h>
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <queue>
 #include <math.h>
+#include <set>
+#include <map>
 
 using namespace std;
 
-#define FSIZE 50
+#define FSIZE 35
 #define RAND(a,b) (rand() % ((b)-(a)+1) + (a))
 
 const int DR[] = {0, 1, 0, -1};
@@ -16,10 +19,25 @@ const int DC[] = {1, 0, -1, 0};
 
 struct Node
 {
-    Node(int rr, int cc, int ddist): r(rr), c(cc), dist(ddist) {}
+    Node(int rr, int cc, int h , int d): r(rr), c(cc), heuristic(h), dist(d)
+    {
+        priority = heuristic + dist;
+    }
     int r, c;
+    int heuristic;
     int dist;
-    bool operator<(const Node& other) const { return dist < other.dist; }
+    int priority;
+    int fromR, fromC;
+    bool operator<(const Node& other) const
+    {
+        if (priority != other.priority)
+            return priority < other.priority;
+        if (heuristic != other.heuristic)
+            return heuristic < other.heuristic;
+        if (r != other.r)
+            return r < other.r;
+        return c < other.c;
+    }
 };
 
 inline bool isValid(int r, int c)
@@ -30,6 +48,11 @@ inline bool isValid(int r, int c)
 inline int getDist(int r1, int c1, int r2, int c2)
 {
     return abs(r1-r2) + abs(c1-c2);
+}
+
+inline int hash(int r, int c)
+{
+    return r*FSIZE + c;
 }
 
 void placeWall(char field[FSIZE][FSIZE], int row, int col, int height, int width)
@@ -68,41 +91,45 @@ int main()
     for (int i = 0; i < 10; i++)
         placeRandomWall(field);
     int curR = -1, curC = -1, endR = -1, endC = -1;
-    for (int dist = 0; curR == -1; dist++)
-        for (int diag = 0; diag <= dist; diag++) {
-            int r = diag;
-            int c = dist-diag;
-            if (field[r][c] == '-') {
-                curR = r;
-                curC = c;
-                field[r][c] = '*';
-            }
-        }
-    for (int dist = 0; endR == -1; dist++)
-        for (int diag = 0; diag <= dist; diag++) {
-            int r = FSIZE-1-diag;
-            int c = FSIZE-1-dist+diag;
-            if (field[r][c] == '-') {
-                endR = r;
-                endC = c;
-                field[r][c] = 'x';
-            }
+    while (curR == endR && curC == endC || field[curR][curC] == '@' || field[endR][endC] == '@') {
+        curR = RAND(0,FSIZE-1);
+        curC = RAND(0,FSIZE-1);
+        endR = RAND(0,FSIZE-1);
+        endC = RAND(0,FSIZE-1);
+    }
+    field[curR][curC] = '*';
+    field[endR][endC] = 'x';
+
+    map<int, bool> seen;
+    set<Node> next;
+    Node n(curR, curC, getDist(curR, curC, endR, endC), 0);
+    next.insert(n);
+    while (!next.empty()) {
+        set<Node>::iterator first = next.begin();
+        n = *first;
+        next.erase(first);
+        if (seen[hash(n.r, n.c)]) continue;
+        if (getDist(n.r, n.c, endR, endC) == 0) break;
+        seen[hash(n.r, n.c)] = true;
+        for (int i = 0; i < 4; i++) {
+            int nextR = n.r + DR[i];
+            int nextC = n.c + DC[i];
+            if (!isValid(nextR, nextC) || field[nextR][nextC] == '@' || seen[hash(nextR, nextC)])
+                continue;
+            int d = 1 + n.dist;
+            int h = getDist(nextR, nextC, endR, endC);
+            Node nextNode(nextR, nextC, h, d);
+            nextNode.fromR = n.r;
+            nextNode.fromC = n.c;
+            next.insert(nextNode);
         }
 
-    priority_queue<Node> q;
-    //WRONG. Also account for dist from start
-    q.push(Node(curR, curC, getDist(curR, curC, endR, endC)));
-    while (!q.empty()) {
-        Node n = q.top(); q.pop();
+        field[curR][curC] = '#';
         curR = n.r;
         curC = n.c;
-        if (getDist(curR, curC, endR, endC) == 0) break;
-        for (int i = 0; i < 4; i++) {
-            if (isValid(curR + DR[i], curC + DC[i])) {
-
-            }
-        }
+        field[curR][curC] = '*';
+        printField(field);
+        getchar();
+        cout << "======================================================================\n";
     }
-    printField(field);
-    //if (system("CLS")) system("clear");
 }
