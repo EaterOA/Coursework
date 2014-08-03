@@ -1,3 +1,11 @@
+/*
+An implementation and sample demonstration of A* on a 2D grid map.
+The grid size is determined by FSIZE, and the start and end points are random.
+Ten walls of random length will be placed around the grid. The demo will show
+each node that the algorithm looks at and, in the end, marks the shortest path
+from start to end.
+*/
+
 #include <iostream>
 #include <time.h>
 #include <string.h>
@@ -30,6 +38,12 @@ struct Node
     int dist;
     int priority;
     int fromR, fromC;
+
+    // This comparison is the core of algorithm. Each node is classified with
+    // a distance from start and a heuristic - in this case, simply the
+    // Manhatten distance to the end. Comparing first by priority, which is
+    // dist + heuristic, ensures optimal shortest paths, and comparing next
+    // by heuristic ensures that you will always be moving towards the goal.
     bool operator<(const Node& other) const
     {
         if (priority != other.priority)
@@ -90,8 +104,12 @@ int main()
     srand((unsigned)time(0));
     char field[FSIZE][FSIZE];
     memset(field, '-', FSIZE*FSIZE);
+
+    // Generate walls
     for (int i = 0; i < 10; i++)
         placeRandomWall(field);
+
+    // Generate start and end location
     int curR = -1, curC = -1, endR = -1, endC = -1;
     while (curR == endR && curC == endC || field[curR][curC] == '@' || field[endR][endC] == '@') {
         curR = RAND(0,FSIZE-1);
@@ -107,16 +125,27 @@ int main()
     Node n(curR, curC, getDist(curR, curC, endR, endC), 0);
     next.insert(n);
     bool found = false;
+
+    // This A* implementation uses the std::set implementation from
+    // dijkstra.cpp, guaranteeing O(ElogV) performance
     while (!next.empty()) {
+
         set<Node>::iterator first = next.begin();
         n = *first;
         next.erase(first);
-        if (seen.find(hash(n.r, n.c)) != seen.end()) continue;
+
+        // Prevent duplicate traversals
+        if (seen.find(hash(n.r, n.c)) != seen.end())
+            continue;
         seen.insert(pair<int,Node>(hash(n.r, n.c), n));
+
+        // Reached destination
         if (getDist(n.r, n.c, endR, endC) == 0) {
             found = true;
             break;
         }
+
+        // Look for neighboring nodes
         for (int i = 0; i < 4; i++) {
             int nextR = n.r + DR[i];
             int nextC = n.c + DC[i];
@@ -130,6 +159,7 @@ int main()
             next.insert(nextNode);
         }
 
+        // Update grid appearance and draw it
         field[curR][curC] = '#';
         curR = n.r;
         curC = n.c;
@@ -139,6 +169,8 @@ int main()
         const string separator(80, '=');
         cout << separator << "\n";
     }
+
+    // If a path is found, mark the shortest path
     if (found) {
         while (curR != -1) {
             field[curR][curC] = '*';

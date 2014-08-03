@@ -7,7 +7,7 @@ algorithm.
 (Really just a catch-all for random code snippets I wrote for one reason or
 another)
 
-- a\_star.cpp: Implementation and demostration of the A\* algorithm on 2D grid
+- a\_star.cpp: Implementation and demonstration of the A\* algorithm on 2D grid
 - BigNum.hpp: Include to use a highly-inefficient C++ big integer class.
 - bternary.cpp: Converts an int into a list of balanced ternary digits. Why the hell would you want to do that? Good question!
 - dijkstra.cpp: Implementations (of different time complexities) and sample application of Dijkstra's algorithm
