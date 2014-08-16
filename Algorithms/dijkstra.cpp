@@ -104,8 +104,8 @@ int main()
         }
     }
 
-    // Use Dijkstra's algorithm on every city to find the shortest path
-    // from city i to every other city
+    // Use Dijkstra's algorithm on every point to find the shortest path
+    // from point i to every other point
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++)
             points[j].dist = INF;
@@ -173,7 +173,7 @@ int main()
         }
 
         #endif
-        // Record the distance of the city farthest from city n
+        // Record the distance of the point farthest from point n
         for (int j = 0; j < N; j++) {
             if (points[j].dist != INF
                 && points[j].dist > farthestDist) {
