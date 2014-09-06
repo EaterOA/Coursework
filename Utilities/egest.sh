@@ -1,11 +1,19 @@
 #!/bin/bash
 
+# egest.sh
+#
+# The companion script to ingest.sh. It takes a bunch of files, concatenates
+# them, and attempts to decrypt it into a tarball which is then decompressed.
+#
+# For usage, see: ./egest.sh -h
+# (or just look at the text right below)
+
 err_exit() {
     cat >&2 <<EOF
 Usage: ./egest.sh [-d] <path to file or directory>
 
 Options:
-    -d: delete all archive files if recovery succeeds
+    -d      delete all archive files if recovery succeeds
 EOF
     exit 1
 }
