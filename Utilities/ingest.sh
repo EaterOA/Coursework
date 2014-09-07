@@ -16,11 +16,12 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: ./ingest.sh [-osne] <path to file or directory>
+Usage: ./ingest.sh [-ocrne] <path to file or directory>
 
 Options:
     -o      specify output name prefix (default "out")
-    -s      specify chunk size to split on (default "1024m"), see split(1)
+    -c      specify chunk size to split on (default "1024m"), see split(1)
+    -r      specify a gpg recipient instead of using a symmetric key
     -n      tell gpg not to sign the encrypted tarball
     -e      don't split the encrypted tarball
 EOF
@@ -30,14 +31,18 @@ EOF
 prefix="out"
 chunk="1024m"
 sign="--sign"
+encryption="--symmetric --cipher-algo AES256"
 split=1
-while getopts ":o:c:ne" opt; do
+while getopts ":o:c:r:ne" opt; do
     case $opt in
         o)
             prefix="$OPTARG"
             ;;
         c)
             chunk="$OPTARG"
+            ;;
+        r)
+            encryption="--encrypt --recipient $OPTARG"
             ;;
         n)
             sign=""
@@ -62,9 +67,9 @@ fi
 
 if (($split == 1)); then
     tar -cz -- "$1" |
-    gpg $sign --force-mdc --cipher-algo AES256 --symmetric --armor |
+    gpg $sign $encryption --force-mdc --armor |
     split -db "$chunk" - "${prefix}.part"
 else
     tar -cz -- "$1" |
-    gpg $sign --force-mdc --cipher-algo AES256 --symmetric --armor --output "$prefix"
+    gpg $sign $encryption --force-mdc --armor --output "$prefix"
 fi
