@@ -28,7 +28,7 @@ if [ $? -ne 0 ]; then
     echo "getfattr (attr) must be installed" >&2
     exit 1
 fi
-echo "${names}" | head -n 1 | xargs getfattr -h -e hex -n system.ntfs_times_be >/dev/null || exit 1
+echo "${names}" | head -n 1 | xargs --delimiter "\n" getfattr -h -e hex -n system.ntfs_times_be >/dev/null || exit 1
 
 echo "Retrieving NTFS creation times..."
 list=""
