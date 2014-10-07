@@ -16,7 +16,7 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: ./ingest.sh [-ocrnea] <path to file or directory>
+Usage: ./ingest.sh [-ocrneaC] <path to file or directory>
 
 Options:
     -o      specify output name prefix (default "out")
@@ -25,6 +25,7 @@ Options:
     -n      tell gpg not to sign the encrypted tarball
     -a      tell gpg to use --armor
     -e      don't split the encrypted tarball
+    -C      specify a directory for tar to change into first
 EOF
     exit 1
 }
@@ -36,7 +37,9 @@ encryption="--symmetric --cipher-algo"
 encryption_arg="AES256"
 split=1
 armor=""
-while getopts ":o:c:r:nea" opt; do
+dir="."
+dirchange=0
+while getopts ":o:c:r:neaC:" opt; do
     case $opt in
         o)
             prefix="$OPTARG"
@@ -57,6 +60,10 @@ while getopts ":o:c:r:nea" opt; do
         a)
             armor="--armor"
             ;;
+        C)
+            dir="$OPTARG"
+            dirchange=1
+            ;;
         \?)
             err_exit
             ;;
@@ -67,16 +74,20 @@ shift $(($OPTIND-1))
 if (($# != 1)); then
     err_exit
 fi
-if [ ! -e "$1" ]; then
-    echo "ERROR: $1 cannot be found" >&2
+testpath="$1"
+if [ $dirchange == 1 ]; then
+    testpath="$dir/$1"
+fi
+if [ ! -e "$testpath" ]; then
+    echo "ERROR: $testpath cannot be found" >&2
     exit 1
 fi
 
 if (($split == 1)); then
-    tar -cz -- "$1" |
+    tar -cz -C "$dir" -- "$1" |
     gpg $sign $encryption "$encryption_arg" $armor --force-mdc |
     split -db "$chunk" - "${prefix}.part"
 else
-    tar -cz -- "$1" |
+    tar -cz -C "$dir" -- "$1" |
     gpg $sign $encryption "$encryption_arg" $armor --force-mdc --output "$prefix"
 fi
