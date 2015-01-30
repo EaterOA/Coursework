@@ -11,19 +11,26 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: gshutdown.sh [-n]
+Usage: gshutdown.sh [-nr]
 
 Options:
     -n      do not show gnome prompt
+    -r      reboot
 EOF
     exit 1
 }
 
+ypflag="--power-off"
+npflag="PowerOff"
 noprompt=0
-while getopts ":n" opt; do
+while getopts ":nr" opt; do
     case $opt in
         n)
             noprompt=1
+            ;;
+        r)
+            ypflag="--reboot"
+            npflag="Reboot"
             ;;
         \?)
             err_exit
@@ -33,7 +40,7 @@ done
 shift $(($OPTIND-1))
 
 if [ $noprompt -eq 0 ]; then
-    gnome-session-quit --power-off
+    gnome-session-quit $ypflag
 else
-    dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
+    dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.$npflag" boolean:true
 fi
