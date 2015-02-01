@@ -40,7 +40,7 @@ done
 shift $(($OPTIND-1))
 
 if [ $noprompt -eq 0 ]; then
-    gnome-session-quit $ypflag
+    gnome-session-quit $ypflag 2>/dev/null &
 else
     dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.$npflag" boolean:true
 fi
