@@ -10,6 +10,7 @@ A (miserable) collection of utility scripts for use in extraordinary situations 
 - egest.sh: Companion script to ingest.sh for recovery of the original file(s)
 - getip.sh: A very slow script that looks for your public ip
 - gshutdown.sh: Invokes poweroff without root password, just like clicking the shutdown button from your favorite desktop environment*
+- randstr.sh: Generates a string of random characters.
 
 *Unless your favorite desktop environment is not my favorite desktop
 environment.
