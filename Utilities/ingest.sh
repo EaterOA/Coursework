@@ -16,7 +16,7 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: ./ingest.sh [-ocrneaC] <path to file or directory>
+Usage: ingest.sh [-ocrneaC] <path to file or directory>
 
 Options:
     -o      specify output name prefix (default "out")

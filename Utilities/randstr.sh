@@ -7,7 +7,7 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: ./randstr.sh [-an] [-c number_of_characters]
+Usage: randstr.sh [-an] [-c number_of_characters]
 
 Options:
     -a      generate alpha characters

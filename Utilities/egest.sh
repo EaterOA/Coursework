@@ -10,7 +10,7 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: ./egest.sh [-d] <path to file or directory>
+Usage: egest.sh [-d] <path to file or directory>
 
 Options:
     -d      delete all archive files if recovery succeeds
