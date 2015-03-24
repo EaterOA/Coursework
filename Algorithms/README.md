@@ -15,3 +15,4 @@ another)
 - sieve.cpp: An implementation of the Sieve of Eratosthenes to find prime numbers. Optimized using tricks from [Project Euler](https://github.com/EaterOA/Euler).
 - sudoku.cpp: Solves any sudoku board given an initial configuration.
 - tictactoe.cpp: Interactive Tic Tac Toe program against a perfect AI.
+- mmap_example.cpp: Example usage of *drumroll* mmap. Specifically, it showcases file-based mmap as well as anonymous shared mmap for multiprocessing.
