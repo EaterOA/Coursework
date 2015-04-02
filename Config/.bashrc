@@ -47,3 +47,9 @@ export PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
 
 # language
 export LC_ALL=en_US.UTF-8
+
+# turn off terminal start/stop signaling (C-s, C-q)
+stty -ixon
+
+# cd while expanding symlinks
+alias pcd="cd -P"
