@@ -1,7 +1,0 @@
-[user]
-	name = Vincent Wong
-	email = duperduper@ucla.edu
-[color]
-	ui = auto
-[push]
-	default = simple
