@@ -11,6 +11,7 @@ A (miserable) collection of utility scripts for use in extraordinary situations 
 - getip.sh: A very slow script that looks for your public ip
 - gshutdown.sh: Invokes poweroff without root password, just like clicking the shutdown button from your favorite desktop environment*
 - randstr.sh: Generates a string of random characters.
+- confirm.sh: Prompts user for confirmation.
 
 *Unless your favorite desktop environment is not my favorite desktop
 environment.
