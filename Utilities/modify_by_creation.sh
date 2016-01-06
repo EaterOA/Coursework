@@ -14,8 +14,15 @@
 NL=$'\n'
 IFS=${NL}
 
-echo "Getting list of regular files in current directory..."
-names=`find . -maxdepth 1 -type f`
+# Not -d, find regular files
+if ! [ "$1" == "-d" ]; then
+    echo "Getting list of regular files in current directory..."
+    names=`find . -maxdepth 1 -type f`
+# With -d, find directories
+else
+    echo "Getting list of directories in current directory..."
+    names=`find . -maxdepth 1 -type d | grep -v "^\.$"`
+fi
 total=`echo "${names}" | wc -l`
 
 echo "Checking requirements..."
