@@ -6,6 +6,7 @@ A (miserable) collection of utility scripts for use in extraordinary situations 
 - confirm.sh: Prompts user for confirmation.
 - dns.sh: Tests DNS resolution. Useful when you suddenly feel like mucking with your bind configs and need to monitor your domain and/or connectivity to the Internet but don't want to read `host`'s ugly output and prefer to sacrifice useful information for this script's pretty colors.
 - egest.sh: Companion script to ingest.sh for recovery of the original file(s)
+- filterjpeg.sh: Poor man's way to filter jpeg files from list of files
 - getip.sh: A very slow script that looks for your public ip
 - gshutdown.sh: Invokes poweroff without root password, just like clicking the shutdown button from your favorite desktop environment*
 - ingest.sh: Encrypts a target file or folder. More specifically, it creates a gzipped tarball out of the target, asks for a passphrase for gpg to AES-256-encrypt the tarball with, and splits the tarball into chunks. Cause I don't trust Dropbox.
