@@ -17,7 +17,7 @@ EOF
     exit 1
 }
 
-site='checkip.dyndns.org'
+site='bot.whatismyipaddress.com'
 timeout=0
 while getopts ":t:" opt; do
     case $opt in
