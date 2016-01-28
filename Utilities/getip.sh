@@ -17,7 +17,7 @@ EOF
     exit 1
 }
 
-site='bot.whatismyipaddress.com'
+site='ipv4bot.whatismyipaddress.com'
 timeout=0
 while getopts ":t:" opt; do
     case $opt in
