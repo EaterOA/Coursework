@@ -7,16 +7,22 @@
 
 err_exit() {
     cat >&2 <<EOF
-Usage: randstr.sh [-an] [number_of_characters]
+Usage: randstr.sh [-ans] [number_of_characters]
 
-Randstr provides a simple way to construct a random sequence of characters.
+randstr provides a simple way to construct a random sequence of characters.
 Perfect for passwords. The number of characters can be adjusted with an integer
 argument. If unspecified, the default is 16.
+
+randstr allows some customization of the output character set. By default,
+randstr generates only alphanumeric characters. Specifying any option will
+result in randstr only using characters from that option, unioned with any
+other options specified.
 
 Options:
     -a      generate alpha characters
     -n      generate numeric characters
     -s      generate special characters
+    -x      generate hexadecimal characters
 EOF
     exit 1
 }
@@ -24,7 +30,8 @@ EOF
 numchars="16"
 filtered=false
 fields="[:alpha:][:digit:]"
-while getopts ":ans" opt; do
+upper=""
+while getopts ":ansx" opt; do
     if [ "$filtered" = false ]; then
         fields=""
         filtered=true
@@ -35,9 +42,16 @@ while getopts ":ans" opt; do
             ;;
         a)
             fields="${fields}[:alpha:]"
+            hex="false"
             ;;
         s)
             fields="${fields}[:punct:]"
+            ;;
+        x)
+            fields="${fields}[:xdigit:]"
+            if [ "$hex" = "" ]; then
+              hex="true"
+            fi
             ;;
         \?)
             err_exit
@@ -55,4 +69,9 @@ if [ ! -z "$1" ]; then
     numchars="$1"
 fi
 
-tr -cd "$fields" < /dev/urandom | head -c "$numchars" ; echo
+hex_filt="cat"
+if [ "$hex" = "true" ]; then
+  hex_filt="tr -cd '[:digit:][:upper:]'"
+fi
+
+tr -cd "$fields" < /dev/urandom | $hex_filt | head -c "$numchars" ; echo
